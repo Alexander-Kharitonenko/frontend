@@ -1,0 +1,12 @@
+<h1>Страница заметок</h1>
+<div *ngIf="notes$ | async as resurs">
+    <div *ngFor="let note of resurs">
+        <span>{{ note.titel}}</span>
+    </div>
+</div>
+<button (click)="submit()">GetAll</button>
+<div class="example-boundary">
+    <div class="example-box" cdkDragBoundary=".example-boundary" cdkDrag>
+        I can only be dragged within the dotted container
+    </div>
+</div>

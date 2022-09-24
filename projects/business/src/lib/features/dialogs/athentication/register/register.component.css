@@ -1,0 +1,21 @@
+.text_continer {
+  display: grid;
+  text-align: center;
+  grid-row-gap: 30px;
+  margin-bottom: 30px;
+  padding: 1%;
+  line-height: 31px;
+}
+
+.container {
+  padding: 25px;
+}
+
+span {
+  font-size: 32px;
+}
+
+.button_container {
+  display: flex;
+  justify-content: space-between;
+}

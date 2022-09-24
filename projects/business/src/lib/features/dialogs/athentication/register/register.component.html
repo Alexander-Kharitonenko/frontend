@@ -1,0 +1,18 @@
+<div class="main_container">
+    <div class="container">
+        <div class="text_continer">
+            <span>Registration</span>
+            <span>Enter data for the new user registration</span>
+        </div>
+
+        <div>
+            <form [formGroup]="form">
+                <formly-form [form]="form" [model]="model" [fields]="fields.register"></formly-form>
+                <div class="button_container">
+                    <button mat-flat-button color="primary" (click)="onBack()">Back</button>
+                    <button mat-flat-button color="primary" (click)="onSubmit(model)">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

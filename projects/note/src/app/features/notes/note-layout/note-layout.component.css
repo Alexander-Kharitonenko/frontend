@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+}
+
+nav {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 30px;
+  width: 100%;
+}
+
+ul {
+  display: flex;
+  list-style: none;
+}
+
+a {
+  margin-left: 10px;
+}
+
+.text {
+  font-size: 30px;
+}
+
+mat-sidenav-container {
+  flex: 1 1 auto;
+}
+
+footer {
+  display: block;
+  width: 100%;
+}
+
+@media screen and (min-width: 578px) {
+  button {
+    display: none;
+  }
+
+  mat-sidenav-container mat-sidenav a {
+    display: flex;
+  }
+}
+
+@media screen and (max-width: 578px) {
+  ul {
+    display: none;
+  }
+
+  button {
+    display: block;
+    justify-content: flex-end;
+    margin-right: -25px;
+  }
+
+  mat-sidenav-container mat-sidenav a {
+    display: flex;
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 100%;
+}
+
+.main_container {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.MatSnack {
+  background-color: #f20202;
+  font-weight: bold;
+  color: aliceblue;
+  margin-top: 30% !important;
+  margin-left: -10%;
+}

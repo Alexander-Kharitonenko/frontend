@@ -1,0 +1,18 @@
+<div class="main_container">
+    <div class="container">
+        <div class="text_container">
+            <span>login</span>
+            <span>Enter your login information</span>
+        </div>
+        <div>
+            <form [formGroup]="form">
+                <formly-form [form]="form" [fields]="fields.login" [model]="model"></formly-form>
+                <div class="button_container">
+                    <a mat-raised-button color="primary" routerLink="register">Register</a>
+                    <button mat-raised-button [disabled]="form.invalid" color="primary"
+                        (click)="onSubmit(model)">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
