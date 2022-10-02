@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "json": "E:/myProject/notes/Business/Tools/Swagger/OpenApiDocumentation/openapi.json"
+      "json": "E:/noteProject/notes/Business/Tools/Swagger/OpenApiDocumentation/openapi.json"
     }
   },
   "codeGenerators": {

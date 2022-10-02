@@ -3,6 +3,7 @@ import { ViewNoteModelDto } from 'projects/business/src/lib/services/communicat/
 export class NoteModel {
   public id?: number;
   public titel?: string;
+  public isCmpleted?: boolean;
   public detailse?: string;
   public createDate?: Date;
   public editTame?: Date;
@@ -18,6 +19,7 @@ export function mapNote(model: ViewNoteModelDto): NoteModel {
   target.id = model.id;
   target.titel = model.titel;
   target.detailse = model.detailse;
+  target.isCmpleted = model.isCmpleted;
   if (typeof model.createDate === 'string') {
     target.createDate = new Date(model.createDate);
   } else {

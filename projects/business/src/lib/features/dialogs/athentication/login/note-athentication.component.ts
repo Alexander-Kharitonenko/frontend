@@ -26,6 +26,7 @@ export class AthenticationComponent {
 
   onSubmit(model: LoginModel) {
     const requestData = mapLoginModel(model);
+    console.log(requestData);
     this.auth.login(requestData).subscribe(() => {
       const token = this.auth.getToken();
 

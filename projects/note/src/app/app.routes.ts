@@ -30,4 +30,4 @@ const globalRoutes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(globalRoutes), NoteModule, LoyoutModule],
 })
-export class NoleGlobalRouteModule {}
+export class NoteGlobalRouteModule {}

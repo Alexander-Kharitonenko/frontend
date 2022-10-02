@@ -7,6 +7,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { AuthenticationService } from './authentication.service';
 
 @Injectable({ providedIn: 'root' })
@@ -24,11 +25,14 @@ export class AuthenticationGuard implements CanActivate, CanActivateChild {
     const token = this.auth.getToken();
 
     if (token !== null) {
-      const isRefresh = this.auth.refreshToken(token);
-      return isRefresh;
+      let isSuccess = await firstValueFrom(this.auth.refreshToken(token));
+
+      if (isSuccess) {
+        return true;
+      }
     }
 
-    return this.router.navigate(['Authorization']);
+    return this.router.navigate(['authorization']);
   }
 
   async canActivateChild(

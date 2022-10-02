@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 
-import { NoleGlobalRouteModule } from './app.routes';
+import { NoteGlobalRouteModule } from './app.routes';
 import { NoteModule } from './features/notes/note.module';
 import { AUTH_API_URL } from './app.constants';
 import { environment } from '../environments/environment';
@@ -20,8 +20,8 @@ import { LoyoutModule } from './features/layout-pages/loyout-module';
 import { API_BASE_URL } from 'projects/business/src/lib/services/communicat/open.api';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { NoteRedusers } from './store/reducers';
-import { NoteEffects } from './store/effects';
+import { NoteRedusers } from '../../../domain/src/notes/note-store/note.reducers';
+import { NoteEffects } from '../../../domain/src/notes/note-store/note.effects';
 
 export function tokenGetter(): string | null {
   return localStorage.getItem(ACCESS_TOKEN_KEY);
@@ -33,13 +33,13 @@ export function tokenGetter(): string | null {
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule,
-    NoleGlobalRouteModule,
+    NoteGlobalRouteModule,
     NoteModule,
     LoyoutModule,
     ReactiveFormsModule,
     FormlyModule,
     MaterialModule,
-    StoreModule.forRoot({ note: NoteRedusers.noteReduser }),
+    StoreModule.forRoot({}),
     EffectsModule.forRoot([NoteEffects]),
     JwtModule.forRoot({
       config: {

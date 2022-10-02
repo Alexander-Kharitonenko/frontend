@@ -21,3 +21,10 @@ body {
   margin-top: 30% !important;
   margin-left: -10%;
 }
+
+.mat-paginator-outer-container {
+  width: 100% !important;
+}
+.mat-paginator-container {
+  justify-content: space-between !important;
+}

@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { NoteModel } from 'projects/domain/src/notes/note.model';
-import { noteActions } from './actions';
+import { noteActions } from './note.actions';
 
 export namespace NoteRedusers {
   export const initialState: NoteModel[] = [];

@@ -7,6 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const modules = [
   MatButtonModule,
@@ -17,6 +18,7 @@ const modules = [
   MatSidenavModule,
   DragDropModule,
   MatSnackBarModule,
+  MatPaginatorModule,
 ];
 
 @NgModule({

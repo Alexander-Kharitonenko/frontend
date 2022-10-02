@@ -6,7 +6,7 @@ import { EmptyLayoutComponent } from './empty-layout/empty-layout.component';
 
 const routes: Routes = [
   {
-    path: 'Authorization',
+    path: 'authorization',
     component: EmptyLayoutComponent,
     children: [
       {

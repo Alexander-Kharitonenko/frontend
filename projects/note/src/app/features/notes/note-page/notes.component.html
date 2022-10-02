@@ -1,12 +1,29 @@
-<h1>Страница заметок</h1>
-<div *ngIf="notes$ | async as resurs">
-    <div *ngFor="let note of resurs">
-        <span>{{ note.titel}}</span>
+<div class="container" *ngIf="data$ | async  as 
+resource">
+    <div>
+        <div class="example-container">
+            <h2>To do</h2>
+
+            <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="
+        resource.incompleteNotes" [cdkDropListConnectedTo]="[doneList]" class="example-list"
+                (cdkDropListDropped)="drop($event)">
+                <div class="example-box" *ngFor="let item of 
+            resource.incompleteNotes" cdkDrag>{{item.titel}}</div>
+            </div>
+        </div>
+
+        <div class="example-container">
+            <h2>Done</h2>
+
+            <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="
+        resource.completedNotes" [cdkDropListConnectedTo]="[todoList ]" class="example-list"
+                (cdkDropListDropped)="drop($event)">
+                <div class="example-box" *ngFor="let item of 
+            resource.completedNotes" cdkDrag>{{item.titel}}</div>
+            </div>
+        </div>
     </div>
-</div>
-<button (click)="submit()">GetAll</button>
-<div class="example-boundary">
-    <div class="example-box" cdkDragBoundary=".example-boundary" cdkDrag>
-        I can only be dragged within the dotted container
-    </div>
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
+    </mat-paginator>
+
 </div>

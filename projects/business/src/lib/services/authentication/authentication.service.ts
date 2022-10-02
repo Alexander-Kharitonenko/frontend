@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { convertToParamMap, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { QueryBuilder } from 'odata-query-builder';
-import { mapUser } from 'projects/domain/src/users/user.model';
+import { mapUser, UserModel } from 'projects/domain/src/users/user.model';
+
 import {
   catchError,
-  exhaustMap,
+  firstValueFrom,
   map,
   mergeMap,
   Observable,
-  switchMap,
   tap,
 } from 'rxjs';
 import {
@@ -17,7 +17,6 @@ import {
   UserApi,
   ViewLoginModel,
   ViewRegisterModel,
-  ViewUserModelDto,
 } from '../communicat/open.api';
 
 export const ACCESS_TOKEN_KEY = 'ACCESS_TOKEN_KEY';
@@ -60,11 +59,34 @@ export class AuthenticationService {
 
   public logout(): void {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
-    this.router.navigate(['Authorization']);
+    this.router.navigate(['authorization']);
   }
 
   public getToken(): string | null {
     return localStorage.getItem(ACCESS_TOKEN_KEY);
+  }
+
+  public async getCurrentUser(): Promise<UserModel> {
+    // let user: UserModel | null = null;
+    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+
+    const jwtService = new JwtHelperService();
+    const payload = jwtService.decodeToken(token!);
+
+    const filter = new QueryBuilder()
+      .filter((f) => f.filterExpression('Email', 'eq', `${payload.email}`))
+      .toQuery()
+      .replace('?$filter=', '');
+
+    let user = await firstValueFrom(
+      this.userApi.getAll(undefined, undefined, filter, undefined, false).pipe(
+        map((response) => {
+          return mapUser(response.data![0]);
+        })
+      )
+    );
+
+    return user;
   }
 
   public isAuthenticated(): boolean {
@@ -82,9 +104,7 @@ export class AuthenticationService {
     return false;
   }
 
-  public refreshToken(token: string): boolean {
-    let isRefresh: boolean = false;
-
+  public refreshToken(token: string): Observable<boolean> {
     const jwtService = new JwtHelperService();
 
     const decodedToken = jwtService.decodeToken(token!);
@@ -94,7 +114,7 @@ export class AuthenticationService {
       .toQuery()
       .replace('?$filter=', '');
 
-    this.userApi
+    return this.userApi
       .getAll(undefined, undefined, filter, undefined, false)
       .pipe(
         mergeMap((response) => {
@@ -105,12 +125,9 @@ export class AuthenticationService {
 
           return this.login(user);
         }),
-        tap((token) =>
-          token !== null ? (isRefresh = true) : (isRefresh = false)
-        )
-      )
-      .subscribe();
-
-    return isRefresh;
+        map((token) => {
+          return token !== null ? true : false;
+        })
+      );
   }
 }
