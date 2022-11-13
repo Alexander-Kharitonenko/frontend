@@ -13,3 +13,16 @@ footer {
   display: block;
   width: 100%;
 }
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+main {
+  background: url(/assets/img/note_background.jpg) 50% / 100% 100% no-repeat;
+}
+
+mat-toolbar-row {
+  justify-content: space-between;
+}

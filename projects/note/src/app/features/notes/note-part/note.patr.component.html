@@ -1,0 +1,29 @@
+<div class="container">
+    <div *ngIf="(note$ | async) as note" class="container_note">
+        <div color="primary" class="container_note_heder">
+            <div class="container_note_button">
+                <button mat-icon-button (click)="edit()">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="remove()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <button mat-icon-button (click)="back()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div>
+            <div class="container_note_content_title">{{note.title}}</div>
+            <div class="container_note_line_ditails">
+                <div>
+                    {{note.details}}
+                </div>
+            </div>
+            <div class="container_note_line_date">
+                <span>Create: {{note.createDate | date : 'MM-dd-yyyy'}}</span>
+                <span>Update: {{note.editTame| date: 'MM-dd-yyyy'}}</span>
+            </div>
+        </div>
+    </div>
+</div>

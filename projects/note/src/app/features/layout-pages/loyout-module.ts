@@ -4,15 +4,17 @@ import { FormlyMaterialModule } from '@ngx-formly/material';
 import { MaterialModule } from '../../material/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { AthenticationComponent } from 'projects/business/src/lib/features/dialogs/athentication/login/note-athentication.component';
+import { AthenticationComponent } from 'projects/business/src/lib/features/dialogs/athentication/login/athentication.component';
 import { RegisterComponent } from 'projects/business/src/lib/features/dialogs/athentication/register/register.component';
 import { EmptyLayoutComponent } from './empty-layout/empty-layout.component';
 import { LoyoutLocalRouterModule } from './loyout-router.module';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { EmptyHomeComponent } from './empty-home/empty-home.component';
 
 @NgModule({
   declarations: [
     EmptyLayoutComponent,
+    EmptyHomeComponent,
     NotFoundComponent,
     RegisterComponent,
     AthenticationComponent,

@@ -25,14 +25,15 @@ export class AuthenticationGuard implements CanActivate, CanActivateChild {
     const token = this.auth.getToken();
 
     if (token !== null) {
-      let isSuccess = await firstValueFrom(this.auth.refreshToken(token));
+      let isSuccess = await firstValueFrom(this.auth.refresh(token));
 
       if (isSuccess) {
+        location.reload();
         return true;
       }
     }
 
-    return this.router.navigate(['authorization']);
+    return this.router.navigate(['/login']);
   }
 
   async canActivateChild(

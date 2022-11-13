@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="user_container">
+        <div class="user_container_heder">
+            <div class="user_icon">
+                <mat-icon>account_box</mat-icon>
+            </div>
+            <div class="user_heder">
+                <span>Login: {{user.login}}</span>
+                <span>Email: {{user.email}}</span>
+            </div>
+        </div>
+        <div class="user_data">
+            <ul class="rectangle">
+                <li>
+                    <span class="rectangle_span">Всего заметок: {{totalNotes}}</span>
+                </li>
+                <li>
+                    <span class="rectangle_span">Заметок к выполнению: {{uncompletedNotes}}</span>
+                </li>
+                <li>
+                    <span class="rectangle_span">Выполненных заметок: {{finishedNotes}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

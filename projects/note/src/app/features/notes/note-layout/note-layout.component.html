@@ -3,8 +3,8 @@
         <mat-toolbar color="primary">
             <mat-toolbar-row>
                 <div>
-                    <mat-icon routerLink="/" aria-hidden="false" fontIcon="edit_square"></mat-icon>
-                    <span class="text">Notes</span>
+                    <mat-icon aria-hidden="false" fontIcon="edit_square"></mat-icon>
+                    <a routerLink="/Home" class="text">Notes</a>
                 </div>
                 <nav>
                     <button mat-icon-button class="example-icon" (click)="drawer.toggle()">
@@ -12,16 +12,16 @@
                     </button>
                     <ul>
                         <li>
-                            <a routerLink="notes" mat-button>Заметки</a>
+                            <a class="indent" routerLink="notes/page/1" mat-button>Заметки</a>
                         </li>
                         <li>
-                            <a mat-button>Пользователь</a>
+                            <a class="indent" routerLink="user" mat-button>Пользователь</a>
                         </li>
                         <li>
-                            <a routerLink="authorization" mat-button>Войти</a>
+                            <a class="indent" routerLink="/login" mat-button>Войти</a>
                         </li>
                         <li>
-                            <a (click)="auth.logout()" mat-button>Выйти</a>
+                            <a class="indent" (click)="auth.logout()" mat-button>Выйти</a>
                         </li>
                     </ul>
                 </nav>
@@ -29,18 +29,34 @@
         </mat-toolbar>
     </header>
 
-    <mat-sidenav-container>
+    <mat-sidenav-container #sidenav (click)="sidenav.close()">
 
         <mat-sidenav #drawer>
             <div>
-                <a mat-flat-button routerLink="notes">Заметки</a>
-                <a mat-flat-button routerLink="">Пользователь</a>
-                <a mat-flat-button routerLink="authorization">Войти</a>
+                <a mat-flat-button routerLink="notes/page/1">Заметки</a>
+                <a mat-flat-button routerLink="user">Пользователь</a>
+                <a mat-flat-button routerLink="/login">Войти</a>
                 <a mat-flat-button (click)="auth.logout()" mat-button>Выйти</a>
             </div>
         </mat-sidenav>
 
         <mat-sidenav-content>
+
+            <div class="area">
+                <ul class="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+
             <main class="main">
                 <router-outlet></router-outlet>
             </main>

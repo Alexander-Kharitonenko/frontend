@@ -1,12 +1,13 @@
 import { ViewNoteModelDto } from 'projects/business/src/lib/services/communicat/open.api';
 
 export class NoteModel {
-  public id?: number;
-  public titel?: string;
-  public isCmpleted?: boolean;
-  public detailse?: string;
-  public createDate?: Date;
-  public editTame?: Date;
+  public id!: number;
+  public userId: number;
+  public title!: string;
+  public isCmpleted!: boolean;
+  public details!: string;
+  public createDate!: Date;
+  public editTame!: Date;
 }
 
 export function mapNote(model: ViewNoteModelDto): NoteModel {
@@ -16,19 +17,20 @@ export function mapNote(model: ViewNoteModelDto): NoteModel {
     return target;
   }
 
-  target.id = model.id;
-  target.titel = model.titel;
-  target.detailse = model.detailse;
-  target.isCmpleted = model.isCmpleted;
+  target.id = model.id!;
+  target.userId = model.userId!;
+  target.title = model.title!;
+  target.details = model.details!;
+  target.isCmpleted = model.isCmpleted!;
   if (typeof model.createDate === 'string') {
     target.createDate = new Date(model.createDate);
   } else {
-    target.createDate = model.createDate;
+    target.createDate = model.createDate!;
   }
   if (typeof model.editTame === 'string') {
     target.editTame = new Date(model.editTame);
   } else {
-    target.editTame = model.editTame;
+    target.editTame = model.editTame!;
   }
 
   return target;

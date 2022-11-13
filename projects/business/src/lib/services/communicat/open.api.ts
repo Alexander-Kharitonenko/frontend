@@ -82,7 +82,7 @@ export class AuthApi {
     }
 
     login(model: ViewLoginModel): Observable<string> {
-        let url_ = this.baseUrl + "/Auth/Login";
+        let url_ = this.baseUrl + "/Auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(model);
@@ -112,6 +112,57 @@ export class AuthApi {
     }
 
     protected processLogin(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    refreshToken(email: string | null | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/Auth/refreshToken?";
+        if (email !== undefined && email !== null)
+            url_ += "email=" + encodeURIComponent("" + email) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRefreshToken(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRefreshToken(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processRefreshToken(response: HttpResponseBase): Observable<string> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -267,7 +318,7 @@ export class NoteApi {
         return _observableOf(null as any);
     }
 
-    addNote(note: CreateNoteDto): Observable<FileResponse> {
+    addNote(note: CreateNoteDto): Observable<DoneResult> {
         let url_ = this.baseUrl + "/Note/AddNote";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -279,7 +330,7 @@ export class NoteApi {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             })
         };
 
@@ -290,31 +341,27 @@ export class NoteApi {
                 try {
                     return this.processAddNote(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse>;
+                    return _observableThrow(e) as any as Observable<DoneResult>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse>;
+                return _observableThrow(response_) as any as Observable<DoneResult>;
         }));
     }
 
-    protected processAddNote(response: HttpResponseBase): Observable<FileResponse> {
+    protected processAddNote(response: HttpResponseBase): Observable<DoneResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DoneResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -323,7 +370,7 @@ export class NoteApi {
         return _observableOf(null as any);
     }
 
-    patch(id: number, note: UpdateNoteDto): Observable<FileResponse> {
+    patch(id: number, note: UpdateNoteDto): Observable<DoneResult> {
         let url_ = this.baseUrl + "/Note/Patch/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -338,7 +385,7 @@ export class NoteApi {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             })
         };
 
@@ -349,31 +396,27 @@ export class NoteApi {
                 try {
                     return this.processPatch(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse>;
+                    return _observableThrow(e) as any as Observable<DoneResult>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse>;
+                return _observableThrow(response_) as any as Observable<DoneResult>;
         }));
     }
 
-    protected processPatch(response: HttpResponseBase): Observable<FileResponse> {
+    protected processPatch(response: HttpResponseBase): Observable<DoneResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DoneResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -382,7 +425,7 @@ export class NoteApi {
         return _observableOf(null as any);
     }
 
-    delete(id: number): Observable<FileResponse> {
+    delete(id: number): Observable<DoneResult> {
         let url_ = this.baseUrl + "/Note/Delete/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -393,7 +436,7 @@ export class NoteApi {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             })
         };
 
@@ -404,31 +447,27 @@ export class NoteApi {
                 try {
                     return this.processDelete(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse>;
+                    return _observableThrow(e) as any as Observable<DoneResult>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse>;
+                return _observableThrow(response_) as any as Observable<DoneResult>;
         }));
     }
 
-    protected processDelete(response: HttpResponseBase): Observable<FileResponse> {
+    protected processDelete(response: HttpResponseBase): Observable<DoneResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DoneResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -570,7 +609,7 @@ export class UserApi {
         return _observableOf(null as any);
     }
 
-    create(user: CreateUserDto): Observable<FileResponse> {
+    create(user: CreateUserDto): Observable<DoneResult> {
         let url_ = this.baseUrl + "/User/Create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -582,7 +621,7 @@ export class UserApi {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             })
         };
 
@@ -593,31 +632,27 @@ export class UserApi {
                 try {
                     return this.processCreate(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse>;
+                    return _observableThrow(e) as any as Observable<DoneResult>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse>;
+                return _observableThrow(response_) as any as Observable<DoneResult>;
         }));
     }
 
-    protected processCreate(response: HttpResponseBase): Observable<FileResponse> {
+    protected processCreate(response: HttpResponseBase): Observable<DoneResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DoneResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -626,7 +661,7 @@ export class UserApi {
         return _observableOf(null as any);
     }
 
-    patch(id: number, user: UpdateUserDto): Observable<FileResponse> {
+    patch(id: number, user: UpdateUserDto): Observable<DoneResult> {
         let url_ = this.baseUrl + "/User/Patch/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -641,7 +676,7 @@ export class UserApi {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             })
         };
 
@@ -652,31 +687,27 @@ export class UserApi {
                 try {
                     return this.processPatch(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse>;
+                    return _observableThrow(e) as any as Observable<DoneResult>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse>;
+                return _observableThrow(response_) as any as Observable<DoneResult>;
         }));
     }
 
-    protected processPatch(response: HttpResponseBase): Observable<FileResponse> {
+    protected processPatch(response: HttpResponseBase): Observable<DoneResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DoneResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -685,7 +716,7 @@ export class UserApi {
         return _observableOf(null as any);
     }
 
-    delete(id: number): Observable<FileResponse> {
+    delete(id: number): Observable<DoneResult> {
         let url_ = this.baseUrl + "/User/Delete/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -696,7 +727,7 @@ export class UserApi {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             })
         };
 
@@ -707,31 +738,27 @@ export class UserApi {
                 try {
                     return this.processDelete(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<FileResponse>;
+                    return _observableThrow(e) as any as Observable<DoneResult>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<FileResponse>;
+                return _observableThrow(response_) as any as Observable<DoneResult>;
         }));
     }
 
-    protected processDelete(response: HttpResponseBase): Observable<FileResponse> {
+    protected processDelete(response: HttpResponseBase): Observable<DoneResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DoneResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -875,8 +902,9 @@ export interface IViewListModelDtoOfViewNoteModelDto {
 
 export class ViewNoteModelDto implements IViewNoteModelDto {
     id?: number;
-    titel?: string;
-    detailse?: string;
+    userId?: number;
+    title?: string;
+    details?: string;
     isCmpleted?: boolean;
     createDate?: Date;
     editTame?: Date | undefined;
@@ -893,8 +921,9 @@ export class ViewNoteModelDto implements IViewNoteModelDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.titel = _data["titel"];
-            this.detailse = _data["detailse"];
+            this.userId = _data["userId"];
+            this.title = _data["title"];
+            this.details = _data["details"];
             this.isCmpleted = _data["isCmpleted"];
             this.createDate = _data["createDate"] ? new Date(_data["createDate"].toString()) : <any>undefined;
             this.editTame = _data["editTame"] ? new Date(_data["editTame"].toString()) : <any>undefined;
@@ -911,8 +940,9 @@ export class ViewNoteModelDto implements IViewNoteModelDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["titel"] = this.titel;
-        data["detailse"] = this.detailse;
+        data["userId"] = this.userId;
+        data["title"] = this.title;
+        data["details"] = this.details;
         data["isCmpleted"] = this.isCmpleted;
         data["createDate"] = this.createDate ? this.createDate.toISOString() : <any>undefined;
         data["editTame"] = this.editTame ? this.editTame.toISOString() : <any>undefined;
@@ -922,16 +952,58 @@ export class ViewNoteModelDto implements IViewNoteModelDto {
 
 export interface IViewNoteModelDto {
     id?: number;
-    titel?: string;
-    detailse?: string;
+    userId?: number;
+    title?: string;
+    details?: string;
     isCmpleted?: boolean;
     createDate?: Date;
     editTame?: Date | undefined;
 }
 
+export class DoneResult implements IDoneResult {
+    resursId?: number;
+    touching?: Date;
+
+    constructor(data?: IDoneResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.resursId = _data["resursId"];
+            this.touching = _data["touching"] ? new Date(_data["touching"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): DoneResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new DoneResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["resursId"] = this.resursId;
+        data["touching"] = this.touching ? this.touching.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IDoneResult {
+    resursId?: number;
+    touching?: Date;
+}
+
 export class CreateNoteDto implements ICreateNoteDto {
     title?: string;
     details?: string;
+    userId?: number;
 
     constructor(data?: ICreateNoteDto) {
         if (data) {
@@ -946,6 +1018,7 @@ export class CreateNoteDto implements ICreateNoteDto {
         if (_data) {
             this.title = _data["title"];
             this.details = _data["details"];
+            this.userId = _data["userId"];
         }
     }
 
@@ -960,6 +1033,7 @@ export class CreateNoteDto implements ICreateNoteDto {
         data = typeof data === 'object' ? data : {};
         data["title"] = this.title;
         data["details"] = this.details;
+        data["userId"] = this.userId;
         return data;
     }
 }
@@ -967,12 +1041,13 @@ export class CreateNoteDto implements ICreateNoteDto {
 export interface ICreateNoteDto {
     title?: string;
     details?: string;
+    userId?: number;
 }
 
 export class UpdateNoteDto implements IUpdateNoteDto {
-    id?: number;
     title?: string;
     details?: string;
+    isCompleted?: boolean;
 
     constructor(data?: IUpdateNoteDto) {
         if (data) {
@@ -985,9 +1060,9 @@ export class UpdateNoteDto implements IUpdateNoteDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
             this.title = _data["title"];
             this.details = _data["details"];
+            this.isCompleted = _data["isCompleted"];
         }
     }
 
@@ -1000,17 +1075,17 @@ export class UpdateNoteDto implements IUpdateNoteDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
         data["title"] = this.title;
         data["details"] = this.details;
+        data["isCompleted"] = this.isCompleted;
         return data;
     }
 }
 
 export interface IUpdateNoteDto {
-    id?: number;
     title?: string;
     details?: string;
+    isCompleted?: boolean;
 }
 
 export class ViewListModelDtoOfViewUserModelDto implements IViewListModelDtoOfViewUserModelDto {
@@ -1195,13 +1270,6 @@ export interface IUpdateUserDto {
     login?: string;
     password?: string;
     email?: string;
-}
-
-export interface FileResponse {
-    data: Blob;
-    status: number;
-    fileName?: string;
-    headers?: { [name: string]: any };
 }
 
 export class ApiException extends Error {

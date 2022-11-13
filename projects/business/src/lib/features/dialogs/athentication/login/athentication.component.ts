@@ -10,8 +10,8 @@ import { AthenticationFieldBuilder } from '../../../field-builders/athentication
 
 @Component({
   selector: 'app-authentication',
-  templateUrl: './note-athentication.component.html',
-  styleUrls: ['./note-athentication.component.css'],
+  templateUrl: './athentication.component.html',
+  styleUrls: ['./athentication.component.css'],
 })
 export class AthenticationComponent {
   constructor(
@@ -26,7 +26,7 @@ export class AthenticationComponent {
 
   onSubmit(model: LoginModel) {
     const requestData = mapLoginModel(model);
-    console.log(requestData);
+
     this.auth.login(requestData).subscribe(() => {
       const token = this.auth.getToken();
 
@@ -35,7 +35,7 @@ export class AthenticationComponent {
       isSuccessful = token !== null ? true : false;
 
       if (isSuccessful) {
-        this.router.navigate(['/']);
+        this.router.navigate(['Home']);
       }
     });
   }

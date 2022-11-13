@@ -9,6 +9,11 @@
 
 .container {
   padding: 25px;
+  max-width: 600px;
+  width: 100%;
+  background-color: white;
+  border-radius: 15px;
+  margin: 10px;
 }
 
 span {

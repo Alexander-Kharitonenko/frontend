@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="text_container">
+        <span>Update note</span>
+        <span class="text_container_small">here you can update note</span>
+    </div>
+    <div class="form_container">
+        <form [formGroup]="form">
+            <formly-form [form]="form" [fields]="fields.editeNote" [model]="model"></formly-form>
+            <div class="button_container">
+                <button mat-raised-button mat-dialog-close mat-dialog-close="false" color="primary">Сlose</button>
+                <button type="submit" mat-raised-button mat-dialog-close [disabled]="form.invalid" color="primary"
+                    (click)="onSubmit(model)">Update</button>
+            </div>
+        </form>
+    </div>
+</div>

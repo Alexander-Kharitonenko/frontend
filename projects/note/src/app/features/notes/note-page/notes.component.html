@@ -1,29 +1,56 @@
-<div class="container" *ngIf="data$ | async  as 
-resource">
-    <div>
-        <div class="example-container">
-            <h2>To do</h2>
+<div class="container">
 
-            <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="
-        resource.incompleteNotes" [cdkDropListConnectedTo]="[doneList]" class="example-list"
-                (cdkDropListDropped)="drop($event)">
-                <div class="example-box" *ngFor="let item of 
-            resource.incompleteNotes" cdkDrag>{{item.titel}}</div>
-            </div>
+    <div class="content_container">
+
+        <div class="add_note">
+            <button *ngIf="selectedPage === 1" mat-raised-button color="primary" (click)="openDialog()">
+                <mat-icon>note_add</mat-icon>
+                add note
+            </button>
         </div>
 
-        <div class="example-container">
-            <h2>Done</h2>
+        <div class="drop-box">
+            <div class="example-container">
+                <h2 [ngStyle]="{'color': 'white'}">To do</h2>
 
-            <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="
-        resource.completedNotes" [cdkDropListConnectedTo]="[todoList ]" class="example-list"
-                (cdkDropListDropped)="drop($event)">
-                <div class="example-box" *ngFor="let item of 
-            resource.completedNotes" cdkDrag>{{item.titel}}</div>
+                <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="
+                incompleteNotes" [cdkDropListConnectedTo]="[doneList]" class="example-list"
+                    (cdkDropListDropped)="drop($event)">
+                    <div class="example-box" *ngFor="let item of 
+                    incompleteNotes$ | async" cdkDrag>
+                        <div>{{item.title}}</div>
+                        <div>
+                            <button mat-flat-button routerLink="/Home/note/{{item.id}}">
+                                <mat-icon>arrow_forward_ios</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <div class="example-container">
+                <h2 [ngStyle]="{'color': 'white'}">Done</h2>
+
+                <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="
+                completedNotes" [cdkDropListConnectedTo]="[todoList ]" class="example-list"
+                    (cdkDropListDropped)="drop($event)">
+                    <div class="example-box" *ngFor="let item of 
+                    completedNotes$ | async" cdkDrag>
+                        <div>{{item.title}}</div>
+                        <div>
+                            <button mat-flat-button routerLink="/Home/note/{{item.id}}">
+                                <mat-icon>arrow_forward_ios</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="paginator">
+            <button *ngFor="let page of totalPages" id="{{page}}" [class.paginator_button]="page === selectedPage"
+                mat-stroked-button routerLink="/Home/notes/page/{{page}}" (click)="getNotes(page)">{{page}}</button>
         </div>
     </div>
-    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
-    </mat-paginator>
+
 
 </div>

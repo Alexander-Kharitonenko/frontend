@@ -32,7 +32,7 @@ export class RegisterComponent {
       let isSuccessful = token !== null ? true : false;
 
       if (isSuccessful) {
-        this.router.navigate(['/']);
+        this.router.navigate(['Home']);
       }
     });
   }

@@ -2,16 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { QueryBuilder } from 'odata-query-builder';
+import { NoteService } from 'projects/domain/src/notes/note.service';
 import { mapUser, UserModel } from 'projects/domain/src/users/user.model';
 
-import {
-  catchError,
-  firstValueFrom,
-  map,
-  mergeMap,
-  Observable,
-  tap,
-} from 'rxjs';
+import { catchError, firstValueFrom, map, Observable, tap } from 'rxjs';
 import {
   AuthApi,
   UserApi,
@@ -59,7 +53,7 @@ export class AuthenticationService {
 
   public logout(): void {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
-    this.router.navigate(['authorization']);
+    this.router.navigate(['/']);
   }
 
   public getToken(): string | null {
@@ -104,7 +98,7 @@ export class AuthenticationService {
     return false;
   }
 
-  public refreshToken(token: string): Observable<boolean> {
+  public refresh(token: string): Observable<boolean> {
     const jwtService = new JwtHelperService();
 
     const decodedToken = jwtService.decodeToken(token!);
@@ -114,20 +108,15 @@ export class AuthenticationService {
       .toQuery()
       .replace('?$filter=', '');
 
-    return this.userApi
-      .getAll(undefined, undefined, filter, undefined, false)
-      .pipe(
-        mergeMap((response) => {
-          const user = new ViewLoginModel();
-          user.email = response.data![0].email;
+    return this.authApi.refreshToken(email).pipe(
+      tap((token) => {
+        localStorage.removeItem(ACCESS_TOKEN_KEY);
 
-          user.password = atob(response.data![0].password!);
-
-          return this.login(user);
-        }),
-        map((token) => {
-          return token !== null ? true : false;
-        })
-      );
+        localStorage.setItem(ACCESS_TOKEN_KEY, token);
+      }),
+      map(() => {
+        return this.getToken !== null ? true : false;
+      })
+    );
   }
 }

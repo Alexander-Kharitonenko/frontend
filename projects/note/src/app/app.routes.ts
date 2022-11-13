@@ -17,6 +17,14 @@ const globalRoutes: Routes = [
   },
 
   {
+    path: '',
+    canActivate: [AuthenticationGuard],
+    canActivateChild: [AuthenticationGuard],
+    loadChildren: () =>
+      import('./features/users/user.module').then((m) => m.UserModule),
+  },
+
+  {
     path: '**',
     redirectTo: '404',
   },

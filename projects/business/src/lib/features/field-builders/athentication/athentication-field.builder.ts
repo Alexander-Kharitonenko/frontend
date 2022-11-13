@@ -14,101 +14,39 @@ export class AthenticationFieldBuilder {
   }
 
   private buildeLogin(): FormlyFieldConfig[] {
-    const email: FormlyFieldConfig = {
-      key: 'email',
-      type: 'input',
-      templateOptions: {
-        label: 'Email address',
-        placeholder: 'Enter email',
-        required: true,
-      },
-      validators: {
-        email: {
-          expression: (c: FormControl) => {
-            return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(c.value);
-          },
-          message: () => `Emaill is not valid`,
-        },
-      },
-    };
+    const email = this.fields.emailField(
+      'email',
+      'Email address',
+      'Enter email',
+      true
+    );
 
-    const password: FormlyFieldConfig = {
-      key: 'password',
-      type: 'input',
-      templateOptions: {
-        label: 'password',
-        placeholder: 'Enter password',
-        required: true,
-      },
-
-      validators: {
-        password: {
-          expression: (c: FormControl) => {
-            return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,}$/.test(c.value);
-          },
-          message: () => `Password is not valid`,
-        },
-      },
-    };
+    const password = this.fields.passwordField(
+      'password',
+      'password',
+      'Enter password',
+      true
+    );
 
     return [email, password];
   }
 
   private buildeRegister(): FormlyFieldConfig[] {
-    const email: FormlyFieldConfig = {
-      key: 'email',
-      type: 'input',
-      templateOptions: {
-        label: 'Email address',
-        placeholder: 'Enter email',
-        required: true,
-      },
+    const email = this.fields.emailField(
+      'email',
+      'Email address',
+      'Enter email',
+      true
+    );
 
-      validators: {
-        email: {
-          expression: (c: FormControl) => {
-            return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(c.value);
-          },
-          massage: () => `Emaill is not valid`,
-        },
-      },
-    };
+    const login = this.fields.nameField('login', 'login', 'Enter login', true);
 
-    const login: FormlyFieldConfig = {
-      key: 'login',
-      type: 'input',
-      templateOptions: {
-        label: 'login',
-        placeholder: 'Enter login',
-        required: true,
-      },
-
-      validators: {
-        login: {
-          expression: () => {},
-          massage: () => {},
-        },
-      },
-    };
-
-    const password: FormlyFieldConfig = {
-      key: 'password',
-      type: 'input',
-      templateOptions: {
-        label: 'password',
-        placeholder: 'Enter password',
-        required: true,
-      },
-
-      validators: {
-        password: {
-          expression: (c: FormControl) => {
-            return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,}$/.test(c.value);
-          },
-          message: () => `Password is not valid`,
-        },
-      },
-    };
+    const password = this.fields.passwordField(
+      'password',
+      'password',
+      'Enter password',
+      true
+    );
 
     return [email, login, password];
   }

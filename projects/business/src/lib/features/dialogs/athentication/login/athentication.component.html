@@ -8,7 +8,7 @@
             <form [formGroup]="form">
                 <formly-form [form]="form" [fields]="fields.login" [model]="model"></formly-form>
                 <div class="button_container">
-                    <a mat-raised-button color="primary" routerLink="register">Register</a>
+                    <a mat-raised-button color="primary" routerLink="/register">Register</a>
                     <button mat-raised-button [disabled]="form.invalid" color="primary"
                         (click)="onSubmit(model)">Submit</button>
                 </div>

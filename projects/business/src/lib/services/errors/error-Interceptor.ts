@@ -22,7 +22,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         var err: Error;
         err = error.error;
         if (typeof err.errorCode === 'undefined') {
-          this._snackBar.open(`Response status ${error.status}`, undefined, {
+          this._snackBar.open(`Response status ${error.message}`, undefined, {
             duration: 2500,
             verticalPosition: 'top',
             horizontalPosition: 'right',
