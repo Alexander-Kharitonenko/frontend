@@ -61,10 +61,6 @@ export function tokenGetter(): string | null {
       useValue: environment.baseUrl,
     },
     {
-      provide: AUTH_API_URL,
-      useValue: environment.loginUrl,
-    },
-    {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthenticationInterceptor,
       multi: true,
