@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'https://localhost:8080',
+  baseUrl: 'http://top-notes.ru',
   loginUrl: 'https://localhost:8080/Auth/Login',
 };
 
