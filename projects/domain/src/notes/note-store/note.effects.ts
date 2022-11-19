@@ -5,6 +5,7 @@ import {
   NoteApi,
   UpdateNoteDto,
 } from 'projects/business/src/lib/services/communicat/open.api';
+import { CompletedSecvice } from 'projects/business/src/lib/services/completed/completed.service';
 import { mapNote, NoteModel } from 'projects/domain/src/notes/note.model';
 import { exhaustAll, exhaustMap, map, mergeMap, switchMap, tap } from 'rxjs';
 import { NoteService } from '../note.service';
@@ -15,13 +16,14 @@ export class NoteEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly api: NoteApi,
+    private readonly completed: CompletedSecvice,
     private readonly noteService: NoteService
   ) {}
 
   getAllNotes$ = createEffect(() =>
     this.actions$.pipe(
       ofType(noteActions.getAll),
-      mergeMap((actoin) =>
+      switchMap((actoin) =>
         this.api
           .getAll(undefined, undefined, actoin.filter, undefined, undefined)
           .pipe(
@@ -43,6 +45,7 @@ export class NoteEffects {
     this.actions$.pipe(
       ofType(noteActions.updateIsСompleted),
       map((action) => {
+        this.completed.wait();
         let model = new UpdateNoteDto();
         model.title = action.model.title;
         model.details = action.model.details;
@@ -54,7 +57,7 @@ export class NoteEffects {
 
         return { action: action, model: model };
       }),
-      mergeMap((data) =>
+      switchMap((data) =>
         this.api.patch(data.action.model.id!, data.model).pipe(
           map((res) => {
             let note = new NoteModel();
@@ -84,7 +87,7 @@ export class NoteEffects {
 
         return { action: action, model: model };
       }),
-      mergeMap((data) =>
+      switchMap((data) =>
         this.api.patch(data.action.id, data.model).pipe(
           map((res) => {
             let note = new NoteModel();
@@ -113,8 +116,8 @@ export class NoteEffects {
         newNote.userId = action.note.userId!;
         return newNote;
       }),
-      mergeMap((data) => this.api.addNote(data)),
-      mergeMap((res) =>
+      switchMap((data) => this.api.addNote(data)),
+      switchMap((res) =>
         this.api.get(res.resursId!).pipe(
           map((res) => {
             const note = mapNote(res);
@@ -128,7 +131,7 @@ export class NoteEffects {
   removeNote$ = createEffect(() =>
     this.actions$.pipe(
       ofType(noteActions.remove),
-      mergeMap((action) =>
+      switchMap((action) =>
         this.api.delete(action.noteId).pipe(
           map((data) => {
             return noteActions.removeSuccess({ resursId: data.resursId! });

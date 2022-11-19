@@ -10,11 +10,12 @@ import { select, Store } from '@ngrx/store';
 import { NoteAddDialogComponent } from 'projects/business/src/lib/features/dialogs/notes/add/note-add-dialog.component';
 import { AuthenticationService } from 'projects/business/src/lib/services/authentication/authentication.service';
 import { CreateNoteDto } from 'projects/business/src/lib/services/communicat/open.api';
+import { CompletedSecvice } from 'projects/business/src/lib/services/completed/completed.service';
 import { noteSelector } from 'projects/domain/src/notes/note-store/note.selectors';
 import { NoteModel } from 'projects/domain/src/notes/note.model';
 import { NoteService } from 'projects/domain/src/notes/note.service';
 import { UserModel } from 'projects/domain/src/users/user.model';
-import { delay, map, Observable, repeatWhen, tap } from 'rxjs';
+import { BehaviorSubject, delay, map, Observable, repeatWhen, tap } from 'rxjs';
 import { noteActions } from '../../../../../../domain/src/notes/note-store/note.actions';
 
 @Component({
@@ -40,30 +41,39 @@ export class NotesComponent implements OnInit {
   private skip = 0;
   private take = 0;
 
+  public isReady: boolean;
+
   constructor(
     private readonly auth: AuthenticationService,
     private readonly store: Store<noteSelector.NoteState>,
     private readonly note: NoteService,
     private readonly activateRoute: ActivatedRoute,
+    private readonly completed: CompletedSecvice,
     public dialog: MatDialog
-  ) {}
+  ) {
+    this.completed.isCompleted.subscribe((data) => {
+      this.isReady = data;
+    });
+  }
 
-  public drop(event: CdkDragDrop<NoteModel[]>) {
-    if (event?.previousContainer === event?.container) {
+  public move(event: CdkDragDrop<NoteModel[]>) {
+    if (event.previousContainer === event.container) {
       moveItemInArray(
-        event?.container?.data!,
-        event?.previousIndex!,
-        event?.currentIndex!
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
       );
     } else {
       let note = event?.previousContainer?.data[event?.previousIndex]!;
       this.store.dispatch(noteActions.updateIsСompleted({ model: note }));
+
       transferArrayItem(
-        event?.previousContainer?.data!,
-        event?.container?.data!,
-        event?.previousIndex!,
-        event?.currentIndex!
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
       );
+      setTimeout(() => this.completed.ready(), 500);
     }
   }
 
@@ -93,31 +103,39 @@ export class NotesComponent implements OnInit {
     this.skip = this.pageSize * page - this.pageSize;
     this.take = this.pageSize * page;
 
-    this.completedNotes$ = this.currentNotes$.pipe(
-      map((notes) => {
-        let data = notes
-          .slice(this.skip, this.take)
-          .filter((el) => el.isCmpleted);
+    this.currentNotes$
+      .pipe(
+        map((notes) => {
+          let data = notes
+            .slice(this.skip, this.take)
+            .filter((el) => el.isCmpleted);
 
-        return data;
-      }),
-      tap((data) => {
+          return data;
+        })
+        /*  tap((data) => {
         this.completedNotes = data;
-      })
-    );
+      }) */
+      )
+      .subscribe((data) => {
+        this.completedNotes = data;
+      });
 
-    this.incompleteNotes$ = this.currentNotes$.pipe(
-      map((notes) => {
-        let data = notes
-          .slice(this.skip, this.take)
-          .filter((el) => !el.isCmpleted);
+    this.currentNotes$
+      .pipe(
+        map((notes) => {
+          let data = notes
+            .slice(this.skip, this.take)
+            .filter((el) => !el.isCmpleted);
 
-        return data;
-      }),
-      tap((data) => {
+          return data;
+        })
+        /*  tap((data) => {
         this.incompleteNotes = data;
-      })
-    );
+      }) */
+      )
+      .subscribe((data) => {
+        this.incompleteNotes = data;
+      });
   }
 
   private calculatePages(count: number, pageSize: number): number[] {

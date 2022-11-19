@@ -13,11 +13,11 @@
             <div class="example-container">
                 <h2 [ngStyle]="{'color': 'white'}">To do</h2>
 
-                <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="
+                <div [cdkDropListDisabled]="isReady" cdkDropList #todoList="cdkDropList" [cdkDropListData]="
                 incompleteNotes" [cdkDropListConnectedTo]="[doneList]" class="example-list"
-                    (cdkDropListDropped)="drop($event)">
+                    (cdkDropListDropped)="move($event)">
                     <div class="example-box" *ngFor="let item of 
-                    incompleteNotes$ | async" cdkDrag>
+                    incompleteNotes" cdkDrag>
                         <div>{{item.title}}</div>
                         <div>
                             <button mat-flat-button routerLink="/Home/note/{{item.id}}">
@@ -31,11 +31,11 @@
             <div class="example-container">
                 <h2 [ngStyle]="{'color': 'white'}">Done</h2>
 
-                <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="
+                <div [cdkDropListDisabled]="isReady" cdkDropList #doneList="cdkDropList" [cdkDropListData]="
                 completedNotes" [cdkDropListConnectedTo]="[todoList ]" class="example-list"
-                    (cdkDropListDropped)="drop($event)">
+                    (cdkDropListDropped)="move($event)">
                     <div class="example-box" *ngFor="let item of 
-                    completedNotes$ | async" cdkDrag>
+                    completedNotes" cdkDrag>
                         <div>{{item.title}}</div>
                         <div>
                             <button mat-flat-button routerLink="/Home/note/{{item.id}}">
