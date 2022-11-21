@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'https://top-notes.ru',
+  baseUrl: 'alexander112-001-site1.itempurl.com',
 };
