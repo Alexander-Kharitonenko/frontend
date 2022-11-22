@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { select, Store } from '@ngrx/store';
 import { AuthenticationService } from 'projects/business/src/lib/services/authentication/authentication.service';
 import { noteSelector } from 'projects/domain/src/notes/note-store/note.selectors';
@@ -18,8 +19,20 @@ export class UserComponent implements OnInit {
 
   constructor(
     private readonly auth: AuthenticationService,
-    private readonly store: Store<noteSelector.NoteState>
+    private readonly store: Store<noteSelector.NoteState>,
+    private snackBar: MatSnackBar
   ) {}
+
+  public copy(text: string) {
+    navigator.clipboard.writeText(text).then(() =>
+      this.snackBar.open('copied', undefined, {
+        duration: 2500,
+        verticalPosition: 'top',
+        horizontalPosition: 'right',
+        panelClass: ['successSnack'],
+      })
+    );
+  }
 
   async ngOnInit(): Promise<void> {
     this.user = await this.auth.getCurrentUser();

@@ -2,23 +2,42 @@
     <div class="user_container">
         <div class="user_container_heder">
             <div class="user_icon">
-                <mat-icon>account_box</mat-icon>
+
+                <mat-icon class="user_icon_transform">account_box</mat-icon>
             </div>
             <div class="user_heder">
-                <span>Login: {{user.login}}</span>
-                <span>Email: {{user.email}}</span>
+
+                <div>
+                    <div class="user_heder_text" matTooltip="{{user.login}}">
+                        <small>Login: <small #login>{{user.login}}</small></small>
+                    </div>
+                    <button (click)="copy(login.innerText)" mat-icon-button class="user_heder_copy_icon">
+                        <mat-icon>file_copy</mat-icon>
+                    </button>
+                </div>
+
+                <div>
+                    <div class="user_heder_text" matTooltip="{{user.email}}">
+                        <small>Email: <small #email>{{user.email}}</small></small>
+                    </div>
+                    <button (click)="copy(email.innerText)" mat-icon-button class="user_heder_copy_icon">
+                        <mat-icon>file_copy</mat-icon>
+                    </button>
+                </div>
+
             </div>
+
         </div>
         <div class="user_data">
             <ul class="rectangle">
                 <li>
-                    <span class="rectangle_span">Всего заметок: {{totalNotes}}</span>
+                    <span data-topt class="rectangle_span">Total notes: {{totalNotes}}</span>
                 </li>
                 <li>
-                    <span class="rectangle_span">Заметок к выполнению: {{uncompletedNotes}}</span>
+                    <span class="rectangle_span">Unfinished Notes: {{uncompletedNotes}}</span>
                 </li>
                 <li>
-                    <span class="rectangle_span">Выполненных заметок: {{finishedNotes}}</span>
+                    <span class="rectangle_span">Completed notes: {{finishedNotes}}</span>
                 </li>
             </ul>
         </div>

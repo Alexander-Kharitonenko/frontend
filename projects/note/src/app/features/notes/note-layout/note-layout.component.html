@@ -12,16 +12,16 @@
                     </button>
                     <ul>
                         <li>
-                            <a class="indent" routerLink="notes/page/1" mat-button>Заметки</a>
+                            <a class="indent" routerLink="notes/page/1" mat-button>Notes</a>
                         </li>
                         <li>
-                            <a class="indent" routerLink="user" mat-button>Пользователь</a>
+                            <a class="indent" routerLink="user" mat-button>User</a>
                         </li>
                         <li>
-                            <a class="indent" routerLink="/login" mat-button>Войти</a>
+                            <a class="indent" routerLink="/login" mat-button>Log in</a>
                         </li>
                         <li>
-                            <a class="indent" (click)="auth.logout()" mat-button>Выйти</a>
+                            <a class="indent" (click)="auth.logout()" mat-button>Log out</a>
                         </li>
                     </ul>
                 </nav>
@@ -33,10 +33,10 @@
 
         <mat-sidenav #drawer>
             <div>
-                <a mat-flat-button routerLink="notes/page/1">Заметки</a>
-                <a mat-flat-button routerLink="user">Пользователь</a>
-                <a mat-flat-button routerLink="/login">Войти</a>
-                <a mat-flat-button (click)="auth.logout()" mat-button>Выйти</a>
+                <a mat-flat-button routerLink="notes/page/1">Notes</a>
+                <a mat-flat-button routerLink="user">User</a>
+                <a mat-flat-button routerLink="/login">Log in</a>
+                <a mat-flat-button (click)="auth.logout()" mat-button>Log out</a>
             </div>
         </mat-sidenav>
 

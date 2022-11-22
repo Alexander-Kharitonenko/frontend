@@ -17,7 +17,7 @@
                 incompleteNotes" [cdkDropListConnectedTo]="[doneList]" class="example-list"
                     (cdkDropListDropped)="move($event)">
                     <div class="example-box" *ngFor="let item of 
-                    incompleteNotes$ | async" cdkDrag>
+                    incompleteNotes" cdkDrag>
                         <div class="container-note">
                             <div class="container-title">{{item.title}}</div>
                             <div>
@@ -38,7 +38,7 @@
                 completedNotes" [cdkDropListConnectedTo]="[todoList]" class="example-list"
                     (cdkDropListDropped)="move($event)">
                     <div class="example-box" *ngFor="let item of 
-                    completedNotes$ |async" cdkDrag>
+                    completedNotes" cdkDrag>
                         <div class="container-note">
                             <div class="container-title">{{item.title}}</div>
                             <div>

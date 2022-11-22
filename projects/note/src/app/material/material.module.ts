@@ -9,6 +9,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const modules = [
   MatButtonModule,
@@ -22,6 +23,7 @@ const modules = [
   MatPaginatorModule,
   MatIconModule,
   MatDialogModule,
+  MatTooltipModule,
 ];
 
 @NgModule({
