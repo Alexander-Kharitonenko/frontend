@@ -13,7 +13,7 @@ export function mapUser(model: ViewUserModelDto): UserModel {
   if (typeof model === null || undefined) {
     return target;
   }
-  target.id = model.id;
+  target.id = model.id!;
   target.email = model.email;
   target.login = model.login;
   target.password = model.password;

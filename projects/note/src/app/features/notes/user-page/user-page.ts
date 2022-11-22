@@ -27,8 +27,10 @@ export class UserComponent implements OnInit {
       .pipe(select(noteSelector.selectNotesByUserId(this.user.id!)))
       .subscribe((notes) => {
         this.totalNotes = notes.length;
-        this.finishedNotes = notes.filter((note) => note.isCmpleted).length;
-        this.uncompletedNotes = notes.filter((note) => !note.isCmpleted).length;
+        this.finishedNotes = notes.filter((note) => note.isCompleted).length;
+        this.uncompletedNotes = notes.filter(
+          (note) => !note.isCompleted
+        ).length;
       });
   }
 }

@@ -4,7 +4,7 @@ export class NoteModel {
   public id!: number;
   public userId: number;
   public title!: string;
-  public isCmpleted!: boolean;
+  public isCompleted!: boolean;
   public details!: string;
   public createDate!: Date;
   public editTame!: Date;
@@ -21,7 +21,7 @@ export function mapNote(model: ViewNoteModelDto): NoteModel {
   target.userId = model.userId!;
   target.title = model.title!;
   target.details = model.details!;
-  target.isCmpleted = model.isCmpleted!;
+  target.isCompleted = model.isCompleted!;
   if (typeof model.createDate === 'string') {
     target.createDate = new Date(model.createDate);
   } else {

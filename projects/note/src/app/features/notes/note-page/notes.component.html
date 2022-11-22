@@ -17,13 +17,16 @@
                 incompleteNotes" [cdkDropListConnectedTo]="[doneList]" class="example-list"
                     (cdkDropListDropped)="move($event)">
                     <div class="example-box" *ngFor="let item of 
-                    incompleteNotes" cdkDrag>
-                        <div>{{item.title}}</div>
-                        <div>
-                            <button mat-flat-button routerLink="/Home/note/{{item.id}}">
-                                <mat-icon>arrow_forward_ios</mat-icon>
-                            </button>
+                    incompleteNotes$ | async" cdkDrag>
+                        <div class="container-note">
+                            <div class="container-title">{{item.title}}</div>
+                            <div>
+                                <button mat-flat-button routerLink="/Home/note/{{item.id}}">
+                                    <mat-icon>arrow_forward_ios</mat-icon>
+                                </button>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -32,16 +35,19 @@
                 <h2 [ngStyle]="{'color': 'white'}">Done</h2>
 
                 <div [cdkDropListDisabled]="isReady" cdkDropList #doneList="cdkDropList" [cdkDropListData]="
-                completedNotes" [cdkDropListConnectedTo]="[todoList ]" class="example-list"
+                completedNotes" [cdkDropListConnectedTo]="[todoList]" class="example-list"
                     (cdkDropListDropped)="move($event)">
                     <div class="example-box" *ngFor="let item of 
-                    completedNotes" cdkDrag>
-                        <div>{{item.title}}</div>
-                        <div>
-                            <button mat-flat-button routerLink="/Home/note/{{item.id}}">
-                                <mat-icon>arrow_forward_ios</mat-icon>
-                            </button>
+                    completedNotes$ |async" cdkDrag>
+                        <div class="container-note">
+                            <div class="container-title">{{item.title}}</div>
+                            <div>
+                                <button mat-flat-button routerLink="/Home/note/{{item.id}}">
+                                    <mat-icon>arrow_forward_ios</mat-icon>
+                                </button>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>

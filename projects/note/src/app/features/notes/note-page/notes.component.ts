@@ -103,39 +103,31 @@ export class NotesComponent implements OnInit {
     this.skip = this.pageSize * page - this.pageSize;
     this.take = this.pageSize * page;
 
-    this.currentNotes$
-      .pipe(
-        map((notes) => {
-          let data = notes
-            .slice(this.skip, this.take)
-            .filter((el) => el.isCmpleted);
+    this.completedNotes$ = this.currentNotes$.pipe(
+      map((notes) => {
+        let data = notes
+          .slice(this.skip, this.take)
+          .filter((el) => el.isCompleted);
 
-          return data;
-        })
-        /*  tap((data) => {
+        return data;
+      }),
+      tap((data) => {
         this.completedNotes = data;
-      }) */
-      )
-      .subscribe((data) => {
-        this.completedNotes = data;
-      });
+      })
+    );
 
-    this.currentNotes$
-      .pipe(
-        map((notes) => {
-          let data = notes
-            .slice(this.skip, this.take)
-            .filter((el) => !el.isCmpleted);
+    this.incompleteNotes$ = this.currentNotes$.pipe(
+      map((notes) => {
+        let data = notes
+          .slice(this.skip, this.take)
+          .filter((el) => !el.isCompleted);
 
-          return data;
-        })
-        /*  tap((data) => {
+        return data;
+      }),
+      tap((data) => {
         this.incompleteNotes = data;
-      }) */
-      )
-      .subscribe((data) => {
-        this.incompleteNotes = data;
-      });
+      })
+    );
   }
 
   private calculatePages(count: number, pageSize: number): number[] {

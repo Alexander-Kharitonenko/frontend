@@ -49,7 +49,7 @@ export class NoteEffects {
         let model = new UpdateNoteDto();
         model.title = action.model.title;
         model.details = action.model.details;
-        if (action.model.isCmpleted) {
+        if (action.model.isCompleted) {
           model.isCompleted = false;
         } else {
           model.isCompleted = true;
@@ -65,7 +65,7 @@ export class NoteEffects {
             note.title = data.model.title!;
             note.userId = data.action.model.userId;
             note.details = data.model.details!;
-            note.isCmpleted = data.model.isCompleted!;
+            note.isCompleted = data.model.isCompleted!;
             note.createDate = data.action.model.createDate;
             note.editTame = res.touching!;
 
@@ -95,7 +95,7 @@ export class NoteEffects {
             note.title = data.model.title!;
             note.userId = data.action.userId;
             note.details = data.model.details!;
-            note.isCmpleted = data.model.isCompleted!;
+            note.isCompleted = data.model.isCompleted!;
             note.createDate = data.action.createDate;
             note.editTame = res.touching!;
 

@@ -905,7 +905,7 @@ export class ViewNoteModelDto implements IViewNoteModelDto {
     userId?: number;
     title?: string;
     details?: string;
-    isCmpleted?: boolean;
+    isCompleted?: boolean;
     createDate?: Date;
     editTame?: Date | undefined;
 
@@ -924,7 +924,7 @@ export class ViewNoteModelDto implements IViewNoteModelDto {
             this.userId = _data["userId"];
             this.title = _data["title"];
             this.details = _data["details"];
-            this.isCmpleted = _data["isCmpleted"];
+            this.isCompleted = _data["isCompleted"];
             this.createDate = _data["createDate"] ? new Date(_data["createDate"].toString()) : <any>undefined;
             this.editTame = _data["editTame"] ? new Date(_data["editTame"].toString()) : <any>undefined;
         }
@@ -943,7 +943,7 @@ export class ViewNoteModelDto implements IViewNoteModelDto {
         data["userId"] = this.userId;
         data["title"] = this.title;
         data["details"] = this.details;
-        data["isCmpleted"] = this.isCmpleted;
+        data["isCompleted"] = this.isCompleted;
         data["createDate"] = this.createDate ? this.createDate.toISOString() : <any>undefined;
         data["editTame"] = this.editTame ? this.editTame.toISOString() : <any>undefined;
         return data;
@@ -955,7 +955,7 @@ export interface IViewNoteModelDto {
     userId?: number;
     title?: string;
     details?: string;
-    isCmpleted?: boolean;
+    isCompleted?: boolean;
     createDate?: Date;
     editTame?: Date | undefined;
 }

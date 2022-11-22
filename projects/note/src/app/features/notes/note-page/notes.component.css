@@ -20,7 +20,7 @@
 }
 
 .example-container {
-  width: 400px;
+  width: 330px;
   max-width: 100%;
   margin: 25px 25px 25px 25px;
   display: inline-block;
@@ -48,6 +48,19 @@
   cursor: move;
   background: white;
   font-size: 14px;
+}
+
+.container-note {
+  display: flex;
+  justify-content: space-between;
+}
+
+.container-title {
+  width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-top: 10px;
 }
 
 .cdk-drag-preview {
@@ -101,7 +114,7 @@
 @media screen and (max-width: 870px) {
   .add_note {
     display: flex;
-    margin-right: 200px;
+    margin-right: 140px;
   }
   .container {
     display: flex;
@@ -138,5 +151,32 @@
     margin: 0 40px 0 40px;
     overflow: hidden;
     display: block;
+  }
+
+  .example-box {
+    padding: 20px 35px;
+    border-bottom: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    cursor: move;
+    background: white;
+    font-size: 14px;
+  }
+
+  .container-note {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .container-title {
+    width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-top: 10px;
   }
 }

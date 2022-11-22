@@ -63,6 +63,7 @@
   font-weight: bold;
   line-height: 45px;
   text-align: center;
+  word-break: break-all;
   padding: 25px;
   background: white;
 }
@@ -116,8 +117,9 @@
     width: 275px;
     height: 90px;
     font-size: 30px;
+    word-break: break-all;
     font-weight: bold;
-    line-height: 45px;
+    line-height: 35px;
     text-align: center;
     padding: 25px;
     background: white;
@@ -128,7 +130,7 @@
     width: 275px;
     height: 240px;
     font-size: 25px;
-    line-height: 55px;
+    line-height: 50px;
     padding: 25px;
     word-break: break-all;
     background: white;

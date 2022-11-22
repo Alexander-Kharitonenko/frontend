@@ -35,7 +35,7 @@ export class NotePartComponent implements OnInit {
         title: this.note.title,
         details: this.note.details,
         userId: this.note.userId,
-        isCmpleted: this.note.isCmpleted,
+        isCompleted: this.note.isCompleted,
         createDate: this.note.createDate,
       },
     });

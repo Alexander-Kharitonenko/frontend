@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'https://alexander112-001-site1.itempurl.com',
+  baseUrl: 'https://localhost:8080',
   loginUrl: 'https://localhost:8080/Auth/Login',
 };
 
